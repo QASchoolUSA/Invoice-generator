@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type BaseProps = {
   value: string;
@@ -78,6 +78,13 @@ type NumberProps = {
   decimals?: number;
 };
 
+function numberToDraft(n: number, decimals: number): string {
+  if (!Number.isFinite(n) || n === 0) return '';
+  if (decimals <= 0) return String(Math.trunc(n));
+  const rounded = Math.round(n * 100) / 100;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
+}
+
 export function EditableNumber({
   value,
   onChange,
@@ -85,41 +92,63 @@ export function EditableNumber({
   className = '',
   ariaLabel,
   min = 0,
-  step = 1,
   decimals = 0,
 }: NumberProps) {
-  const display = Number.isFinite(value)
-    ? decimals > 0
-      ? value.toString()
-      : Number.isInteger(value)
-        ? value.toString()
-        : value.toString()
-    : '';
+  const [focused, setFocused] = useState(false);
+  const [draft, setDraft] = useState<string>(() =>
+    numberToDraft(value, decimals),
+  );
+
+  useEffect(() => {
+    if (!focused) setDraft(numberToDraft(value, decimals));
+  }, [value, decimals, focused]);
+
+  const allowDecimal = decimals > 0;
+  const pattern = allowDecimal ? /^\d*\.?\d*$/ : /^\d*$/;
 
   return (
     <input
       type="text"
-      inputMode={decimals > 0 ? 'decimal' : 'numeric'}
+      inputMode={allowDecimal ? 'decimal' : 'numeric'}
       aria-label={ariaLabel}
       className={`field cell-num ${className}`}
-      value={display}
+      value={draft}
       placeholder={placeholder}
+      onFocus={() => setFocused(true)}
       onChange={(e) => {
-        const raw = e.target.value.replace(/[^0-9.\-]/g, '');
-        if (raw === '' || raw === '-' || raw === '.') {
+        let raw = e.target.value.replace(/,/g, '.');
+        if (!pattern.test(raw)) return;
+        if (allowDecimal) {
+          const firstDot = raw.indexOf('.');
+          if (firstDot !== -1) {
+            raw =
+              raw.slice(0, firstDot + 1) +
+              raw.slice(firstDot + 1).replace(/\./g, '');
+          }
+        }
+        setDraft(raw);
+
+        if (raw === '' || raw === '.') {
           onChange(0);
           return;
         }
         const n = Number(raw);
         if (!Number.isFinite(n)) return;
-        const clamped = min !== undefined && n < min ? min : n;
+        const clamped = n < min ? min : n;
         onChange(clamped);
       }}
-      onBlur={(e) => {
-        const n = Number(e.target.value);
-        if (!Number.isFinite(n)) onChange(0);
+      onBlur={() => {
+        setFocused(false);
+        const n = Number(draft);
+        if (!Number.isFinite(n) || draft === '' || draft === '.') {
+          onChange(0);
+          setDraft('');
+          return;
+        }
+        const clamped = n < min ? min : n;
+        onChange(clamped);
+        setDraft(numberToDraft(clamped, decimals));
       }}
-      step={step}
     />
   );
 }
