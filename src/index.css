@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --paper: #ffffff;
+  --paper-shadow: 0 10px 40px -12px rgba(15, 23, 42, 0.18),
+    0 2px 8px -4px rgba(15, 23, 42, 0.08);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(74, 124, 133, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(74, 124, 133, 0.06), transparent 60%),
+    #f5f6f8;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@layer components {
+  .field {
+    @apply w-full bg-transparent outline-none border-0 border-b border-dashed border-transparent
+           focus:border-teal-accent/60 focus:bg-teal-accent/[0.04]
+           transition-colors rounded-sm px-0.5 -mx-0.5;
+  }
+  .field-ghost {
+    @apply field hover:border-slate-300;
+  }
+  .cell-num {
+    @apply text-right tabular-nums;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .paper {
+    box-shadow: none !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
