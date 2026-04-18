@@ -33,6 +33,7 @@ export function makeDefaultInvoice(): Invoice {
       address: '265 N Ivey Lane, Orlando, FL 32811',
       phone: '+1 (786) 202-7578',
     },
+    itemDescriptionColumnLabel: 'Filter Name',
     items: [newLineItem()],
     bank: {
       name: 'Chase bank',

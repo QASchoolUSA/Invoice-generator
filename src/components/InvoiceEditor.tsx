@@ -109,6 +109,10 @@ export function InvoiceEditor({ data, onChange }: Props) {
 
       {/* Line items */}
       <LineItemsTable
+        descriptionColumnLabel={data.itemDescriptionColumnLabel}
+        onDescriptionColumnLabelChange={(v) =>
+          set('itemDescriptionColumnLabel', v)
+        }
         items={data.items}
         onChange={(items) => set('items', items)}
       />

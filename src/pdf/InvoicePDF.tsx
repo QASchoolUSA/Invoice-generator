@@ -8,6 +8,9 @@ type Props = { data: Invoice };
 
 export function InvoicePDF({ data }: Props) {
   const total = totalAmount(data.items);
+  const descHeader = (
+    data.itemDescriptionColumnLabel || 'Filter Name'
+  ).toUpperCase();
 
   return (
     <Document
@@ -65,7 +68,7 @@ export function InvoicePDF({ data }: Props) {
         {/* Items table */}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={[styles.thBase, styles.thDescription]}>DESCRIPTION</Text>
+            <Text style={[styles.thBase, styles.thDescription]}>{descHeader}</Text>
             <Text style={[styles.thBase, styles.thQty]}>QUANTITY</Text>
             <Text style={[styles.thBase, styles.thPrice]}>PRICE</Text>
             <Text style={[styles.thBase, styles.thAmount]}>AMOUNT</Text>

@@ -6,11 +6,18 @@ import { EditableNumber, EditableText } from './EditableText';
 import { newLineItem } from '../defaults';
 
 type Props = {
+  descriptionColumnLabel: string;
+  onDescriptionColumnLabelChange: (v: string) => void;
   items: LineItem[];
   onChange: (items: LineItem[]) => void;
 };
 
-export function LineItemsTable({ items, onChange }: Props) {
+export function LineItemsTable({
+  descriptionColumnLabel,
+  onDescriptionColumnLabelChange,
+  items,
+  onChange,
+}: Props) {
   const update = (id: string, patch: Partial<LineItem>) => {
     onChange(items.map((it) => (it.id === id ? { ...it, ...patch } : it)));
   };
@@ -29,7 +36,15 @@ export function LineItemsTable({ items, onChange }: Props) {
     <div className="mt-6">
       {/* Desktop/tablet header */}
       <div className="hidden sm:grid grid-cols-[1fr_96px_120px_120px_32px] gap-3 border-b border-teal-accent/60 pb-2 text-[11px] font-semibold tracking-[0.14em] text-teal-accent uppercase">
-        <div>Description</div>
+        <div className="min-w-0">
+          <EditableText
+            value={descriptionColumnLabel}
+            onChange={onDescriptionColumnLabelChange}
+            placeholder="Column name"
+            ariaLabel="Line items first column header"
+            className="text-[11px] font-semibold tracking-[0.14em] text-teal-accent uppercase"
+          />
+        </div>
         <div className="text-center">Quantity</div>
         <div className="text-right">Price</div>
         <div className="text-right">Amount</div>
@@ -46,8 +61,8 @@ export function LineItemsTable({ items, onChange }: Props) {
             <EditableText
               value={it.description}
               onChange={(v) => update(it.id, { description: v })}
-              placeholder="Item description"
-              ariaLabel="Item description"
+              placeholder="Line item"
+              ariaLabel={`${descriptionColumnLabel || 'Line item'} text`}
               className="text-[14px] text-slate-800"
             />
             <EditableNumber
@@ -106,14 +121,24 @@ export function LineItemsTable({ items, onChange }: Props) {
                 <Trash2 size={18} />
               </button>
             </div>
-            <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-slate-500 mb-0.5">
-              Description
-            </label>
+            <div className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-slate-500 mb-0.5">
+              {idx === 0 ? (
+                <EditableText
+                  value={descriptionColumnLabel}
+                  onChange={onDescriptionColumnLabelChange}
+                  placeholder="Column name"
+                  ariaLabel="Line items first column header"
+                  className="text-[10px] font-semibold tracking-[0.14em] uppercase text-slate-500"
+                />
+              ) : (
+                descriptionColumnLabel
+              )}
+            </div>
             <EditableText
               value={it.description}
               onChange={(v) => update(it.id, { description: v })}
-              placeholder="Item description"
-              ariaLabel="Item description"
+              placeholder="Line item"
+              ariaLabel={`${descriptionColumnLabel || 'Line item'} text`}
               className="text-[15px] text-slate-900"
               multiline
             />

@@ -35,6 +35,8 @@ export type Invoice = {
   invoiceNumber: string;
   date: string;
   billTo: BillTo;
+  /** First column header for line items (e.g. Description, Filter Name). */
+  itemDescriptionColumnLabel: string;
   items: LineItem[];
   bank: Bank;
   terms: Terms;
