@@ -36,13 +36,13 @@ export function LineItemsTable({
     <div className="mt-6">
       {/* Desktop/tablet header */}
       <div className="hidden sm:grid grid-cols-[1fr_96px_120px_120px_32px] gap-3 border-b border-teal-accent/60 pb-2 text-[11px] font-semibold tracking-[0.14em] text-teal-accent uppercase">
-        <div className="min-w-0">
+        <div className="min-w-0 pl-3">
           <EditableText
             value={descriptionColumnLabel}
             onChange={onDescriptionColumnLabelChange}
             placeholder="Column name"
             ariaLabel="Line items first column header"
-            className="text-[11px] font-semibold tracking-[0.14em] text-teal-accent uppercase"
+            className="text-left text-[11px] font-semibold tracking-[0.14em] text-teal-accent uppercase"
           />
         </div>
         <div className="text-center">Quantity</div>
@@ -58,13 +58,15 @@ export function LineItemsTable({
             key={it.id}
             className="group grid grid-cols-[1fr_96px_120px_120px_32px] gap-3 py-2.5 items-center"
           >
-            <EditableText
-              value={it.description}
-              onChange={(v) => update(it.id, { description: v })}
-              placeholder="Line item"
-              ariaLabel={`${descriptionColumnLabel || 'Line item'} text`}
-              className="text-[14px] text-slate-800"
-            />
+            <div className="min-w-0 self-center pl-3">
+              <EditableText
+                value={it.description}
+                onChange={(v) => update(it.id, { description: v })}
+                placeholder="Line item"
+                ariaLabel={`${descriptionColumnLabel || 'Line item'} text`}
+                className="text-left text-[14px] text-slate-800"
+              />
+            </div>
             <EditableNumber
               value={it.quantity}
               onChange={(v) => update(it.id, { quantity: v })}
@@ -101,6 +103,17 @@ export function LineItemsTable({
         ))}
       </div>
 
+      {/* Mobile: shared column header so each card’s description lines up */}
+      <div className="sm:hidden border-b border-teal-accent/60 pb-2 mb-1 text-[10px] font-semibold tracking-[0.14em] text-teal-accent uppercase">
+        <EditableText
+          value={descriptionColumnLabel}
+          onChange={onDescriptionColumnLabelChange}
+          placeholder="Column name"
+          ariaLabel="Line items first column header"
+          className="text-[10px] font-semibold tracking-[0.14em] text-teal-accent uppercase"
+        />
+      </div>
+
       {/* Mobile cards */}
       <div className="sm:hidden space-y-3">
         {items.map((it, idx) => (
@@ -121,25 +134,12 @@ export function LineItemsTable({
                 <Trash2 size={18} />
               </button>
             </div>
-            <div className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-slate-500 mb-0.5">
-              {idx === 0 ? (
-                <EditableText
-                  value={descriptionColumnLabel}
-                  onChange={onDescriptionColumnLabelChange}
-                  placeholder="Column name"
-                  ariaLabel="Line items first column header"
-                  className="text-[10px] font-semibold tracking-[0.14em] uppercase text-slate-500"
-                />
-              ) : (
-                descriptionColumnLabel
-              )}
-            </div>
             <EditableText
               value={it.description}
               onChange={(v) => update(it.id, { description: v })}
               placeholder="Line item"
               ariaLabel={`${descriptionColumnLabel || 'Line item'} text`}
-              className="text-[15px] text-slate-900"
+              className="text-left text-[15px] text-slate-900"
               multiline
             />
             <div className="mt-3 grid grid-cols-3 gap-3">
